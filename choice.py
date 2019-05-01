@@ -3,7 +3,7 @@ import tkinter as tk
 
 def choice(choices, default=0, SubmitText="Submit", title="Questionaire"):
 	ChoiceWin = tk.Tk()
-	ChoiceWin.iconbitmap("./choice.ico")
+	ChoiceWin.iconbitmap("./res/choice.ico")
 	ChoiceWin.title(title)
 
 

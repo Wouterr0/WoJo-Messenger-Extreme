@@ -69,7 +69,7 @@ other_n, other_e = [int(num) for num in recvd]
 
 win = tk.Tk()
 win.configure(background=bg)
-win.iconbitmap("./favicon.ico")
+win.iconbitmap("./res/favicon.ico")
 win.geometry("400x525")
 win.pack_propagate(0)
 win.title("WoJo Messenger Extreme")
@@ -82,7 +82,7 @@ msg_send_frame = tk.Frame(win)
 msg_send_frame.pack(fill=tk.X, side=tk.BOTTOM)
 msg_input = tk.Entry(msg_send_frame)
 msg_input.pack(fill=tk.X, side=tk.BOTTOM)
-msg_send_btn_img = tk.PhotoImage(file="send.png")
+msg_send_btn_img = tk.PhotoImage(file="./res/send.png")
 
 
 
