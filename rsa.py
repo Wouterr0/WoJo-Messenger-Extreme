@@ -42,6 +42,8 @@ def decrypt(c, d, n):
 	m = pow(c, d, n)
 	return m
 
+
+
 if __name__ == "__main__":
 	while True:		
 		msg = input("msg: ")

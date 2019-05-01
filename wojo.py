@@ -15,9 +15,9 @@ msg_box_color_yours = "#017ced"
 msg_box_color_other = "#f50057"
 msg_box_txt_color_yours = "#ffffff"
 msg_box_txt_color_other = "#ffffff"
-bufsize = 36
+bufsize = 444
+sendbufsize = 36
 
-print()
 
 sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -30,10 +30,8 @@ choice = bool(choice(["Start new connection", "Join open connection"]))
 def listen(socket, port):
 	socket.bind(("127.0.0.1", port))
 	socket.listen(1)
-	print("Listening for a new connection...")
 
 	clientip, addr = socket.accept()
-	print(f"Connection established at {addr}...")
 
 	return clientip
 
@@ -41,16 +39,13 @@ def listen(socket, port):
 def connect(socket, ip, port):
 	while True:
 		try:
-			print("Trying to connect...")
 			socket.connect((ip if ip else "127.0.0.1", port))
 		except ConnectionRefusedError:
 			continue
-		print("Connected")
 		break
 
 
 if choice:
-	n, e, d = rsa.generate()	
 	connect(sock1, destip, 1234)
 	recv_sock = listen(sock2, 5555)
 	send_sock = sock1
@@ -59,6 +54,17 @@ else:
 	connect(sock2, destip, 5555)
 	send_sock = sock2
 
+
+n, e, d = rsa.generate()	
+
+if choice:
+	send_sock.send((str(n) + ',' + str(e)).encode())
+	recvd = recv_sock.recv(2048).decode().split(',')
+else:
+	recvd = recv_sock.recv(2048).decode().split(',')
+	send_sock.send((str(n) + ',' + str(e)).encode())
+
+other_n, other_e = [int(num) for num in recvd]
 
 
 win = tk.Tk()
@@ -79,6 +85,7 @@ msg_input.pack(fill=tk.X, side=tk.BOTTOM)
 msg_send_btn_img = tk.PhotoImage(file="send.png")
 
 
+
 def clear(_=None):
 	for old_msg in msg_frame.winfo_children():
 		old_msg.destroy()
@@ -95,14 +102,20 @@ def send(_=None):
 		clear()
 		return
 	msg_input.delete(0, tk.END)
-	recv(msg, True)
-	send_sock.send(msg.encode("utf-8"))
+	
+	msgInNumbers, msgLength = rsa.strtonum(msg)
+	encryptedMsg = rsa.encrypt(msgInNumbers, other_e, other_n)
+	
+	recv(msg, True) # To show msg you own window on the right side.
+	
+	print((str(encryptedMsg) + ',' + str(msgLength)))
+	send_sock.send((str(encryptedMsg) + ',' + str(msgLength)).encode("utf-8"))
 
 
 def recv(recv_msg, you):
-	# Shit to ensure that own messages wil be recieved in bufsize
-	for index in range(math.ceil(len(recv_msg)/bufsize)):
-		recv_part = recv_msg[index*bufsize:index*bufsize+bufsize]
+	# Shit to ensure that own messages wil be recieved in sendbufsize
+	for index in range(math.ceil(len(recv_msg)/sendbufsize)):
+		recv_part = recv_msg[index*sendbufsize:index*sendbufsize+sendbufsize]
 		msg_box = tk.Label(msg_frame, text=recv_part, bg=msg_box_color_yours if you else msg_box_color_other,
 		                   borderwidth=1, fg=msg_box_txt_color_yours if you else msg_box_txt_color_other, font=("Roboto", 11, "normal"), padx=4, relief="raised")
 		msg_box.pack(anchor=tk.E if you else tk.W)
@@ -124,8 +137,12 @@ while True:
 		close()
 
 	if ready[0]:
-		recv_data = recv_sock.recv(bufsize)
-		if not recv_data: close()
-		recv_msg = recv_data.decode("utf-8")
-		recv(recv_msg, False)
-		print(recv_msg, "<-- recvd")
+		recvdData = recv_sock.recv(bufsize)
+		if not recvdData: close()
+		
+		encryptedRecvdMsg, recvdMsgLength = [int(num) for num in recvdData.decode().split(',')]
+		decryptedRecvdMsgInNumbers = rsa.decrypt(encryptedRecvdMsg, d, n)
+		decryptedRecvdMsg = rsa.numtostr(decryptedRecvdMsgInNumbers, recvdMsgLength)
+		
+		recv(decryptedRecvdMsg, False)
+		print(decryptedRecvdMsg[:6]+"...", "<-- recvd")
