@@ -23,12 +23,12 @@ sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
-
 destip = input("Dest ip: ")
+destip = destip if destip else "127.0.0.1"
 choice = bool(choice(["Start new connection", "Join open connection"]))
 
-def listen(socket, port):
-	socket.bind(("127.0.0.1", port))
+def listen(socket, ip, port):
+	socket.bind((ip, port))
 	socket.listen(1)
 
 	clientip, addr = socket.accept()
@@ -39,7 +39,7 @@ def listen(socket, port):
 def connect(socket, ip, port):
 	while True:
 		try:
-			socket.connect((ip if ip else "127.0.0.1", port))
+			socket.connect((ip, port))
 		except ConnectionRefusedError:
 			continue
 		break
@@ -47,10 +47,10 @@ def connect(socket, ip, port):
 
 if choice:
 	connect(sock1, destip, 1234)
-	recv_sock = listen(sock2, 5555)
+	recv_sock = listen(sock2, destip, 5555)
 	send_sock = sock1
 else:
-	recv_sock = listen(sock1, 1234)
+	recv_sock = listen(sock1, destip, 1234)
 	connect(sock2, destip, 5555)
 	send_sock = sock2
 
@@ -106,9 +106,8 @@ def send(_=None):
 	msgInNumbers, msgLength = rsa.strtonum(msg)
 	encryptedMsg = rsa.encrypt(msgInNumbers, other_e, other_n)
 	
-	recv(msg, True) # To show msg you own window on the right side.
+	recv(msg, True) # To show msg in your own window on the right side.
 	
-	print((str(encryptedMsg) + ',' + str(msgLength)))
 	send_sock.send((str(encryptedMsg) + ',' + str(msgLength)).encode("utf-8"))
 
 
@@ -145,4 +144,5 @@ while True:
 		decryptedRecvdMsg = rsa.numtostr(decryptedRecvdMsgInNumbers, recvdMsgLength)
 		
 		recv(decryptedRecvdMsg, False)
-		print(decryptedRecvdMsg[:6]+"...", "<-- recvd")
+		print(decryptedRecvdMsg[:6] +
+		      ('' if len(decryptedRecvdMsg) <= 6 else "..."), "\t<-- recvd")
