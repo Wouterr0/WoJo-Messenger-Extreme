@@ -27,8 +27,9 @@ destip = input("Dest ip: ")
 destip = destip if destip else "127.0.0.1"
 choice = bool(choice(["Start new connection", "Join open connection"]))
 
-def listen(socket, ip, port):
-	socket.bind((ip, port))
+def listen(socket, port):
+	print(port)
+	socket.bind((socket.gethostbyname(), port))
 	socket.listen(1)
 
 	clientip, addr = socket.accept()
@@ -47,10 +48,10 @@ def connect(socket, ip, port):
 
 if choice:
 	connect(sock1, destip, 1234)
-	recv_sock = listen(sock2, destip, 5555)
+	recv_sock = listen(sock2, 5555)
 	send_sock = sock1
 else:
-	recv_sock = listen(sock1, destip, 1234)
+	recv_sock = listen(sock1, 1234)
 	connect(sock2, destip, 5555)
 	send_sock = sock2
 
