@@ -32,7 +32,7 @@ def listen(sock, port):
 	sock.bind((socket.gethostbyname(socket.gethostname()), port))
 	sock.listen(1)
 
-	clientip, addr = socket.accept()
+	clientip, addr = sock.accept()
 
 	return clientip
 
