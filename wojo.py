@@ -29,7 +29,7 @@ choice = bool(choice(["Start new connection", "Join open connection"]))
 
 def listen(sock, port):
 	print(port)
-	sock.bind((socket.gethostbyname(socket.gethostname()), port))
+	sock.bind(('', port))
 	sock.listen(1)
 
 	clientip, addr = sock.accept()
