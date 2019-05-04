@@ -27,10 +27,10 @@ destip = input("Dest ip: ")
 destip = destip if destip else "127.0.0.1"
 choice = bool(choice(["Start new connection", "Join open connection"]))
 
-def listen(socket, port):
+def listen(sock, port):
 	print(port)
-	socket.bind((socket.gethostbyname(), port))
-	socket.listen(1)
+	sock.bind((socket.gethostbyname(socket.gethostname()), port))
+	sock.listen(1)
 
 	clientip, addr = socket.accept()
 
