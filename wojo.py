@@ -1,6 +1,5 @@
 import select
 import socket
-import time
 import sys
 import math
 import tkinter as tk
@@ -28,7 +27,6 @@ destip = destip if destip else "127.0.0.1"
 choice = bool(choice(["Start new connection", "Join open connection"]))
 
 def listen(sock, port):
-	print(port)
 	sock.bind(('', port))
 	sock.listen(1)
 
@@ -56,7 +54,7 @@ else:
 	send_sock = sock2
 
 
-n, e, d = rsa.generate()	
+n, e, d = rsa.generate()
 
 if choice:
 	send_sock.send((str(n) + ',' + str(e)).encode())
@@ -147,3 +145,4 @@ while True:
 		recv(decryptedRecvdMsg, False)
 		print(decryptedRecvdMsg[:6] +
 		      ('' if len(decryptedRecvdMsg) <= 6 else "..."), "\t<-- recvd")
+		print(encryptedRecvdMsg)
