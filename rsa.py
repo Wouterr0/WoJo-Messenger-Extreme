@@ -1,7 +1,5 @@
 import numpy as np
 from random import randint
-from egcd import egcd
-
 
 def egcd(b, n):
     (x0, x1, y0, y1) = (1, 0, 0, 1)
