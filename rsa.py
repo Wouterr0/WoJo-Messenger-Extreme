@@ -36,7 +36,7 @@ def generate(p=number.getPrime(randint(660, 700)),
         e = randint(2, carm_func)
         if np.gcd(e, carm_func) == 1: break
     d = int(modinv(e, phi))
-    return (n, e, d, p, q)
+    return (n, e, d)
 
 
 def encrypt(m, e, n):
