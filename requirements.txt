@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 numpy==1.15.1
 pycrypto==2.6.1
+=======
+numpy
+pycryptodomes
+>>>>>>> 4a7d3ad95799aebf7883e8b063d8dec2df39abb0
