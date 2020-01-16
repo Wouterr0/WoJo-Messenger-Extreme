@@ -1,2 +1,6 @@
 # Messenger
 A simple messenger using Python sockets and is encrypted using RSA encryption.
+
+
+# DISCLAIMER
+ONLY USE THE RSA IMPLEMENTATION USED IN THIS REPOSITORY EDUCATIONAL PURPOSES. I HAVE NO IDEA WHAT I AM DOING WHATSOEVER.
