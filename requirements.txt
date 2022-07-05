@@ -1,2 +1,2 @@
-numpy==1.15.1
-pycryptodome==3.8.2
+numpy
+pycryptodome
